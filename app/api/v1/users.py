@@ -17,7 +17,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 
-def _to_response(user) -> UserResponse:  # noqa: ANN001
+def _to_response(user) -> UserResponse:
     """Convert a Beanie User document to a UserResponse schema."""
     return UserResponse(
         _id=str(user.id),

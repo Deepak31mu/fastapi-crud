@@ -1,7 +1,5 @@
 """Integration tests for the /api/v1/users endpoints."""
 
-import pytest
-
 
 # ── CREATE ───────────────────────────────────────────────────────────────────
 
@@ -16,7 +14,9 @@ class TestCreateUser:
         assert body["is_active"] is True
         assert "_id" in body
 
-    async def test_create_user_duplicate_email(self, async_client, created_user, sample_user_payload):
+    async def test_create_user_duplicate_email(
+        self, async_client, created_user, sample_user_payload
+    ):
         resp = await async_client.post("/api/v1/users/", json=sample_user_payload)
         assert resp.status_code == 409
         assert "already exists" in resp.json()["detail"]
@@ -97,7 +97,7 @@ class TestUpdateUser:
         assert resp.status_code == 404
 
     async def test_update_user_duplicate_email(self, async_client, mock_db):
-        r1 = await async_client.post(
+        await async_client.post(
             "/api/v1/users/", json={"name": "User A", "email": "a@example.com"}
         )
         r2 = await async_client.post(

@@ -1,6 +1,6 @@
 """Concrete repository for User documents backed by MongoDB / Beanie."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from beanie import PydanticObjectId
@@ -32,7 +32,7 @@ class UserRepository(BaseRepository[User]):
         user = await self.get_by_id(entity_id)
         if user is None:
             return None
-        update_data["updated_at"] = datetime.now(timezone.utc)
+        update_data["updated_at"] = datetime.now(UTC)
         await user.update({"$set": update_data})
         # Refresh from DB to return the latest state
         return await self.get_by_id(entity_id)

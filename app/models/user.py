@@ -1,6 +1,7 @@
 """User document model for MongoDB (Beanie ODM)."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from typing import ClassVar
 
 from beanie import Document
 from pydantic import EmailStr, Field
@@ -13,15 +14,15 @@ class User(Document):
     name: str = Field(..., min_length=1, max_length=100)
     email: EmailStr = Field(..., description="Unique email address")
     is_active: bool = Field(default=True)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     class Settings:
         name = "users"
-        indexes = [IndexModel([("email", ASCENDING)], unique=True)]
+        indexes: ClassVar[list] = [IndexModel([("email", ASCENDING)], unique=True)]
 
     class Config:
-        json_schema_extra = {
+        json_schema_extra: ClassVar[dict] = {
             "example": {
                 "name": "Deepak Upadhyay",
                 "email": "deepak@example.com",

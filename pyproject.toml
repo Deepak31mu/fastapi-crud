@@ -54,6 +54,9 @@ select = [
     "SIM", # flake8-simplify
     "RUF", # ruff-specific rules
 ]
+ignore = [
+    "B008",  # Depends()/Query() in function defaults is idiomatic FastAPI
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["app"]
