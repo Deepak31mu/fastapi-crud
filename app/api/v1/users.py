@@ -8,6 +8,7 @@ response schemas.  No business logic lives here.
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.deps import get_user_service
+from app.models.user import User
 from app.schemas.user import UserCreate, UserListResponse, UserResponse, UserUpdate
 from app.services.user_service import UserService
 
@@ -17,10 +18,10 @@ router = APIRouter(prefix="/users", tags=["Users"])
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 
-def _to_response(user) -> UserResponse:
+def _to_response(user: User) -> UserResponse:
     """Convert a Beanie User document to a UserResponse schema."""
     return UserResponse(
-        _id=str(user.id),
+        id=str(user.id),
         name=user.name,
         email=user.email,
         is_active=user.is_active,

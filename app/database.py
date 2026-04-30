@@ -1,12 +1,14 @@
 """MongoDB connection management using Motor + Beanie ODM."""
 
+from typing import Any
+
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.config import get_settings
 from app.models.user import User
 
-_client: AsyncIOMotorClient | None = None
+_client: AsyncIOMotorClient[Any] | None = None
 
 
 async def connect_to_database() -> None:
@@ -28,6 +30,6 @@ async def close_database_connection() -> None:
         _client = None
 
 
-def get_client() -> AsyncIOMotorClient | None:
+def get_client() -> AsyncIOMotorClient[Any] | None:
     """Return the current Motor client (useful for health-checks)."""
     return _client

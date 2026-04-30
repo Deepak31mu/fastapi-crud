@@ -4,6 +4,7 @@ Run with:  poetry run uvicorn app.main:app --reload
 """
 
 import logging
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -26,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 # ── Lifespan (startup / shutdown) ────────────────────────────────────────────
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Manage application startup and shutdown events."""
     logger.info("Connecting to MongoDB at %s …", settings.mongodb_url)
     await connect_to_database()
@@ -64,7 +65,7 @@ app.include_router(users_router, prefix="/api/v1")
 
 # ── Health check ─────────────────────────────────────────────────────────────
 @app.get("/health", tags=["Health"])
-async def health_check():
+async def health_check() -> dict[str, str]:
     client = get_client()
     db_status = "disconnected"
     if client is not None:
