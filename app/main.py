@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.users import router as users_router
 from app.config import get_settings
-from app.database import close_database_connection, connect_to_database
+from app.database import close_database_connection, connect_to_database, get_client
 from app.exceptions.handlers import register_exception_handlers
 
 settings = get_settings()
@@ -49,7 +49,7 @@ app = FastAPI(
 # ── Middleware ───────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if not settings.is_production else [],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -65,4 +65,16 @@ app.include_router(users_router, prefix="/api/v1")
 # ── Health check ─────────────────────────────────────────────────────────────
 @app.get("/health", tags=["Health"])
 async def health_check():
-    return {"status": "healthy", "app": settings.app_name}
+    client = get_client()
+    db_status = "disconnected"
+    if client is not None:
+        try:
+            await client.admin.command("ping")
+            db_status = "connected"
+        except Exception:
+            db_status = "error"
+    return {
+        "status": "healthy" if db_status == "connected" else "degraded",
+        "app": settings.app_name,
+        "database": db_status,
+    }

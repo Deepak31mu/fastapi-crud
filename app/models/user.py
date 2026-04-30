@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 
 from beanie import Document
 from pydantic import EmailStr, Field
+from pymongo import ASCENDING, IndexModel
 
 
 class User(Document):
@@ -17,7 +18,7 @@ class User(Document):
 
     class Settings:
         name = "users"
-        indexes = ["email"]
+        indexes = [IndexModel([("email", ASCENDING)], unique=True)]
 
     class Config:
         json_schema_extra = {

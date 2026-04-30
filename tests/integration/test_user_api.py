@@ -65,7 +65,6 @@ class TestListUsers:
         assert len(body["users"]) >= 1
 
     async def test_list_users_pagination(self, async_client, mock_db):
-        # Create 3 users
         for i in range(3):
             await async_client.post(
                 "/api/v1/users/",
@@ -98,7 +97,6 @@ class TestUpdateUser:
         assert resp.status_code == 404
 
     async def test_update_user_duplicate_email(self, async_client, mock_db):
-        # Create two users
         r1 = await async_client.post(
             "/api/v1/users/", json={"name": "User A", "email": "a@example.com"}
         )
@@ -106,7 +104,6 @@ class TestUpdateUser:
             "/api/v1/users/", json={"name": "User B", "email": "b@example.com"}
         )
         user_b_id = r2.json()["_id"]
-        # Try to give User B the same email as User A
         resp = await async_client.patch(
             f"/api/v1/users/{user_b_id}", json={"email": "a@example.com"}
         )
@@ -122,7 +119,6 @@ class TestDeleteUser:
         resp = await async_client.delete(f"/api/v1/users/{user_id}")
         assert resp.status_code == 204
 
-        # Verify it's gone
         resp = await async_client.get(f"/api/v1/users/{user_id}")
         assert resp.status_code == 404
 
@@ -138,4 +134,7 @@ class TestHealthCheck:
     async def test_health(self, async_client, mock_db):
         resp = await async_client.get("/health")
         assert resp.status_code == 200
-        assert resp.json()["status"] == "healthy"
+        body = resp.json()
+        assert "status" in body
+        assert "database" in body
+        assert body["app"] == "fastapi-crud"
