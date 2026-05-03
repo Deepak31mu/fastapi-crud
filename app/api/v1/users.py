@@ -43,6 +43,7 @@ async def create_user(
     payload: UserCreate,
     service: UserService = Depends(get_user_service),
 ) -> UserResponse:
+    """Create a new user and return the created resource."""
     user = await service.create_user(payload)
     return _to_response(user)
 
@@ -56,6 +57,7 @@ async def get_user(
     user_id: str,
     service: UserService = Depends(get_user_service),
 ) -> UserResponse:
+    """Return a single user by ID, or 404 if not found."""
     user = await service.get_user(user_id)
     return _to_response(user)
 
@@ -70,6 +72,7 @@ async def list_users(
     page_size: int = Query(default=10, ge=1, le=100, description="Items per page"),
     service: UserService = Depends(get_user_service),
 ) -> UserListResponse:
+    """Return a paginated list of users."""
     users, total = await service.list_users(page=page, page_size=page_size)
     return UserListResponse(
         total=total,
@@ -89,6 +92,7 @@ async def update_user(
     payload: UserUpdate,
     service: UserService = Depends(get_user_service),
 ) -> UserResponse:
+    """Partially update a user's fields and return the updated resource."""
     user = await service.update_user(user_id, payload)
     return _to_response(user)
 
@@ -102,4 +106,5 @@ async def delete_user(
     user_id: str,
     service: UserService = Depends(get_user_service),
 ) -> None:
+    """Delete a user by ID, or 404 if not found."""
     await service.delete_user(user_id)
