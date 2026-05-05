@@ -1,0 +1,223 @@
+<mxfile host="app.diagrams.net" modified="2026-05-05T00:00:00.000Z" agent="Claude" version="21.0.0">
+  <diagram id="architecture" name="FastAPI CRUD Architecture">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ── Title ── -->
+        <mxCell id="title" value="FastAPI CRUD — Layered Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="427" y="30" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════
+             LAYER SWIMLANES
+        ══════════════════════════════════════════════════════ -->
+
+        <!-- Client -->
+        <mxCell id="lane_client" value="Client" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="client" value="HTTP Client&#xa;(Browser / curl / Postman)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="lane_client">
+          <mxGeometry x="20" y="40" width="160" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Entry Point -->
+        <mxCell id="lane_entrypoint" value="Entry Point — app/main.py" style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="340" y="100" width="960" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="uvicorn" value="Uvicorn&#xa;(ASGI Server)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="lane_entrypoint">
+          <mxGeometry x="20" y="40" width="130" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="fastapi_app" value="FastAPI App&#xa;app = FastAPI(...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="lane_entrypoint">
+          <mxGeometry x="200" y="40" width="150" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="cors_mw" value="CORSMiddleware" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="lane_entrypoint">
+          <mxGeometry x="400" y="40" width="130" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="exc_handlers" value="Exception Handlers&#xa;(404 / 409 / 422 / 500)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="lane_entrypoint">
+          <mxGeometry x="580" y="40" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="health" value="GET /health" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="lane_entrypoint">
+          <mxGeometry x="790" y="40" width="130" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- API Layer -->
+        <mxCell id="lane_api" value="API Layer — app/api/v1/users.py   [prefix: /api/v1/users]" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="340" y="280" width="960" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ep_create" value="POST /&#xa;create_user()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane_api">
+          <mxGeometry x="20" y="50" width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ep_get" value="GET /{id}&#xa;get_user()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane_api">
+          <mxGeometry x="200" y="50" width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ep_list" value="GET /&#xa;list_users()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane_api">
+          <mxGeometry x="380" y="50" width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ep_update" value="PATCH /{id}&#xa;update_user()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane_api">
+          <mxGeometry x="560" y="50" width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ep_delete" value="DELETE /{id}&#xa;delete_user()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane_api">
+          <mxGeometry x="740" y="50" width="130" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Schemas -->
+        <mxCell id="lane_schema" value="Schemas — app/schemas/user.py  (Pydantic — request/response contracts)" style="swimlane;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="340" y="490" width="960" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="s_create" value="UserCreate&#xa;name, email" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="lane_schema">
+          <mxGeometry x="20" y="40" width="130" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s_update" value="UserUpdate&#xa;name?, email?, is_active?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="lane_schema">
+          <mxGeometry x="200" y="40" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s_response" value="UserResponse&#xa;id, name, email, is_active, timestamps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="lane_schema">
+          <mxGeometry x="420" y="40" width="200" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s_list" value="UserListResponse&#xa;total, page, page_size, users[]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="lane_schema">
+          <mxGeometry x="680" y="40" width="200" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- DI -->
+        <mxCell id="lane_di" value="Dependency Injection — app/api/deps.py" style="swimlane;startSize=30;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="340" y="660" width="960" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="di_repo" value="get_user_repository()&#xa;→ UserRepository()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="lane_di">
+          <mxGeometry x="200" y="35" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="di_svc" value="get_user_service()&#xa;→ UserService(repo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="lane_di">
+          <mxGeometry x="500" y="35" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Service -->
+        <mxCell id="lane_service" value="Service Layer — app/services/user_service.py  (Business Logic)" style="swimlane;startSize=30;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="340" y="820" width="960" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_create" value="create_user()&#xa;duplicate email check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="lane_service">
+          <mxGeometry x="20" y="40" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_get" value="get_user()&#xa;404 if missing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="lane_service">
+          <mxGeometry x="220" y="40" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_list" value="list_users()&#xa;pagination logic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="lane_service">
+          <mxGeometry x="420" y="40" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_update" value="update_user()&#xa;model_dump(exclude_unset)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="lane_service">
+          <mxGeometry x="620" y="40" width="160" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_delete" value="delete_user()&#xa;404 if missing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="lane_service">
+          <mxGeometry x="820" y="40" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Repository -->
+        <mxCell id="lane_repo" value="Repository Layer — app/repositories/  (Data Access)" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="340" y="990" width="960" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_base" value="BaseRepository[T]&#xa;(Generic ABC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="lane_repo">
+          <mxGeometry x="20" y="40" width="140" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="repo_user" value="UserRepository&#xa;create / get_by_id&#xa;get_by_email / get_all&#xa;update / delete / count" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="lane_repo">
+          <mxGeometry x="220" y="30" width="170" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Model -->
+        <mxCell id="lane_model" value="Domain Model — app/models/user.py  (Beanie Document)" style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="340" y="1170" width="960" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="model_user" value="User(Document)&#xa;name, email, is_active&#xa;created_at, updated_at&#xa;collection: users  |  unique index: email" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="lane_model">
+          <mxGeometry x="200" y="30" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- MongoDB -->
+        <mxCell id="lane_db" value="Persistence — app/database.py" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="340" y="1340" width="960" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="motor" value="Motor&#xa;(async MongoDB driver)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane_db">
+          <mxGeometry x="200" y="35" width="170" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="mongodb" value="MongoDB&#xa;users collection" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;size=10;" vertex="1" parent="lane_db">
+          <mxGeometry x="500" y="30" width="140" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Config -->
+        <mxCell id="lane_config" value="Config — app/config.py" style="swimlane;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="80" y="660" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="config" value="Settings (pydantic-settings)&#xa;mongodb_url&#xa;mongodb_db_name&#xa;cors_origins, debug" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="lane_config">
+          <mxGeometry x="10" y="35" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════════════════
+             ARROWS — request flow (top to bottom)
+        ══════════════════════════════════════════════════════ -->
+
+        <!-- Client → Uvicorn -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="client" target="uvicorn" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Uvicorn → FastAPI App -->
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="uvicorn" target="fastapi_app" parent="lane_entrypoint">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- FastAPI App → CORS -->
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="fastapi_app" target="cors_mw" parent="lane_entrypoint">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- FastAPI App → Exception Handlers -->
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="fastapi_app" target="exc_handlers" parent="lane_entrypoint">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Entry Point → API Layer -->
+        <mxCell id="e5" value="include_router&#xa;prefix=/api/v1" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=2;" edge="1" source="lane_entrypoint" target="lane_api" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- API Layer → Schemas -->
+        <mxCell id="e6" value="validate request/response" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=2;" edge="1" source="lane_api" target="lane_schema" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- API Layer → DI -->
+        <mxCell id="e7" value="Depends(get_user_service)" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=2;" edge="1" source="lane_schema" target="lane_di" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- DI → Service -->
+        <mxCell id="e8" value="injects UserService" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=2;" edge="1" source="lane_di" target="lane_service" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Service → Repository -->
+        <mxCell id="e9" value="delegates CRUD" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=2;" edge="1" source="lane_service" target="lane_repo" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Repository → Model -->
+        <mxCell id="e10" value="operates on User document" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=2;" edge="1" source="lane_repo" target="lane_model" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Model → DB -->
+        <mxCell id="e11" value="Beanie ODM → Motor → MongoDB" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=2;" edge="1" source="lane_model" target="lane_db" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- BaseRepository → UserRepository inheritance -->
+        <mxCell id="e12" value="inherits" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=0;" edge="1" source="repo_base" target="repo_user" parent="lane_repo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Config → Entry Point -->
+        <mxCell id="e13" value="get_settings()" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=2;" edge="1" source="lane_config" target="lane_entrypoint" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
